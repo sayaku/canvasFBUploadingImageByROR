@@ -1,0 +1,6 @@
+<h1>Photo#show</h1>
+<p>這是您剛剛產生的圖片</p>
+
+<img src=<%= @photo.dataUrl %> />
+
+<p><%= link_to '發布到facebook', facebook_uploadImg_path(picId: @photo.id)%></p>

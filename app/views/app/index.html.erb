@@ -1,0 +1,84 @@
+<h1>App#index</h1>
+<p>大家來玩遊戲吧</p>
+<canvas id="AppCanvas" width="960" height="637"></canvas>
+
+<script>
+
+
+	var stage = new createjs.Stage("AppCanvas");
+    var textField,btn;
+    
+
+	loadImage();
+
+    function loadImage() {
+       var preload = new createjs.LoadQueue();
+       preload.addEventListener("fileload", handleFileComplete);
+       preload.loadFile("/bianchi.jpg");
+    }
+
+    function handleFileComplete(e){
+            var image = e.result;
+            var bmp = new createjs.Bitmap(image)
+            stage.addChild(bmp);
+
+            bmp.alpha=.7;
+            
+            createjs.Ticker.setFPS(60);
+            createjs.Ticker.addEventListener("tick", render);
+            init();
+    }
+
+    function init(){
+       btn=new createjs.Container();
+
+	   var circle = new createjs.Shape();
+       circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+       circle.x = 0;
+       circle.y = 0;
+       btn.addChild(circle);
+       var txt= new createjs.Text("確定","20px Arial","#ff7700");
+       txt.x=-20;
+       txt.y=-10;
+       txt.touchable=false;
+       txt.mouseable=false;
+       btn.addChild(txt);
+       
+       btn.x=800;
+       btn.y=550;
+       stage.addChild(btn);
+
+       textField = new TextInput();
+       textField.y = textField.x = 100;
+       textField.placeHolder = "Input Field"; // updates the default text
+       textField.update();
+
+       textField.setBg('#fbfbfb');
+
+       stage.addChild(textField);
+
+
+       btn.addEventListener("mousedown",draw);
+    }
+    
+
+    function draw(e){
+    	 btn.removeEventListener("mousedown",draw);
+         stage.removeChild(btn);
+         btn=null;
+         var data = stage.toDataURL("image/png");
+           
+
+            $.ajax({
+               url : "/photo/create",
+               type : "post",
+               data : { data_value: data }
+              });
+    }
+
+    function render(e){
+    	stage.update();
+
+    }
+    
+</script>
